@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hgkj.model.dao.OrderdetailMapper" >
+  <resultMap id="orderdetailMap" type="com.hgkj.model.entity.Orderdetail" >
+    <id column="orderdetailid" property="orderdetailid" jdbcType="INTEGER" />
+    <result column="orderFruitnum" property="orderfruitnum" jdbcType="INTEGER" />
+    <result column="orderFruitmoney" property="orderfruitmoney" jdbcType="DOUBLE" />
+    <result column="ordersid" property="ordersid" jdbcType="INTEGER" />
+    <result column="goodsid" property="goodsid" jdbcType="INTEGER" />
+    <association property="goods" column="goodsid" select="onegoods" fetchType="eager" javaType="goods"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    orderdetailid, orderFruitnum, orderFruitmoney, ordersid, goodsid
+  </sql>
+  <select id="onegoods" resultType="goods" parameterType="java.lang.Integer" >
+    select
+    *
+    from goods
+    where goodsid = #{goodsid,jdbcType=INTEGER}
+  </select>
+  <insert id="addorderdetail" parameterType="orderdetail">
+    insert into orderdetail(orderfruitnum, orderfruitmoney, ordersid, goodsid)
+    values (#{orderfruitnum},#{orderfruitmoney},#{ordersid},#{goodsid})
+  </insert>
+  <delete id="deleteorderdetaoil" parameterType="orders">
+    delete from orderdetail where ordersid=#{ordersid}
+  </delete>
+  <select id="oneorderdetail" resultMap="orderdetailMap">
+    select <include refid="Base_Column_List"/>
+    from orderdetail
+    where goodsid=#{goodsid}
+  </select>
+</mapper>

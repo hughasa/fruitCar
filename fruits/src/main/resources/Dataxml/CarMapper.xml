@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hgkj.model.dao.CarMapper">
+    <resultMap id="CarMap" type="com.hgkj.model.entity.Car">
+        <id column="carid" property="carid" jdbcType="INTEGER"/>
+        <result column="goodsnum" property="goodsnum" jdbcType="INTEGER"/>
+        <result column="totalprice" property="totalprice" jdbcType="DOUBLE"/>
+        <result column="custid" property="custid" jdbcType="INTEGER"/>
+        <result column="goodsid" property="goodsid" jdbcType="INTEGER"/>
+        <association property="goods" column="goodsid" javaType="goods" select="onegoods" fetchType="eager"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    carid, goodsnum, totalprice, custid, goodsid
+  </sql>
+    <select id="onecar" resultMap="CarMap">
+        select
+        <include refid="Base_Column_List"/>
+        from car
+        <where>
+            <if test="goodsid!=null and goodsid!=''">
+                and goodsid=#{goodsid}
+            </if>
+            <if test="custid!=null and custid!=''">
+                and custid=#{custid}
+            </if>
+            <if test="carid!=null and carid!=''">
+                and carid=#{carid}
+            </if>
+        </where>
+    </select>
+    <select id="allcar" resultMap="CarMap">
+        select
+        <include refid="Base_Column_List"/>
+        from car
+        where custid=#{custid}
+    </select>
+    <insert id="addcar" parameterType="car">
+        insert into car(goodsnum,totalprice,custid,goodsid) values(#{goodsnum},#{totalprice},#{custid},#{goodsid})
+        <selectKey keyProperty="carid" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    <update id="updatecar" parameterType="car">
+        update car
+        <set>
+            <if test="goodsnum!=null and goodsnum!=''">
+                goodsnum=#{goodsnum},
+            </if>
+            <if test="totalprice!=null and totalprice!=''">
+                totalprice=#{totalprice},
+            </if>
+            <if test="custid!=null and custid!=''">
+                custid=#{custid},
+            </if>
+            <if test="goodsid!=null and goodsid!=''">
+                goodsid=#{goodsid},
+            </if>
+        </set>
+        where carid=#{carid}
+    </update>
+    <select id="onegoods" parameterType="java.lang.Integer" resultType="goods">
+        select * from goods where goodsid=#{goodsid}
+    </select>
+    <delete id="deletecar" parameterType="car">
+        delete from car where carid=#{carid}
+    </delete>
+</mapper>

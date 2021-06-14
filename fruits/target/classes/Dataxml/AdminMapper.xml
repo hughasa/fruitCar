@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hgkj.model.dao.AdminMapper" >
+  <resultMap id="adminMap" type="com.hgkj.model.entity.Admin" >
+    <id column="aid" property="aid" jdbcType="INTEGER" />
+    <result column="adminname" property="adminname" jdbcType="VARCHAR" />
+    <result column="adminpwd" property="adminpwd" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    aid, adminname, adminpwd
+  </sql>
+  <select id="Loginadmin" resultMap="adminMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from admin
+    where adminname = #{adminname} and adminpwd = #{adminpwd}
+  </select>
+</mapper>

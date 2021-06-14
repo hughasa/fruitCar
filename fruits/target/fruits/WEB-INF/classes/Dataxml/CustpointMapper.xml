@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hgkj.model.dao.CustpointMapper" >
+  <resultMap id="custpointMap" type="com.hgkj.model.entity.Custpoint" >
+    <id column="pointid" property="pointid" jdbcType="INTEGER" />
+    <result column="pointnum" property="pointnum" jdbcType="INTEGER" />
+    <result column="custid" property="custid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    pointid, pointnum, custid
+  </sql>
+  <insert id="addcustpoint" parameterType="custpoint">
+    insert into custpoint(pointnum, custid) values (#{pointnum},#{custid})
+  </insert>
+  <update id="updatecustpoint" parameterType="custpoint">
+    update custpoint set pointnum=#{pointnum} where custid=#{custid}
+  </update>
+</mapper>

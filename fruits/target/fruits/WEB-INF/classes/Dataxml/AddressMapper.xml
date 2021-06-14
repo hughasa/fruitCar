@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hgkj.model.dao.AddressMapper" >
+  <resultMap id="addressMap" type="com.hgkj.model.entity.Address" >
+    <id column="addressid" property="addressid" jdbcType="INTEGER" />
+    <result column="addressrecName" property="addressrecname" jdbcType="VARCHAR" />
+    <result column="addressareas" property="addressareas" jdbcType="VARCHAR" />
+    <result column="addressareashi" property="addressareashi" jdbcType="VARCHAR" />
+    <result column="addressareaqu" property="addressareaqu" jdbcType="VARCHAR" />
+    <result column="addresscity" property="addresscity" jdbcType="VARCHAR" />
+    <result column="addressemail" property="addressemail" jdbcType="INTEGER" />
+    <result column="addresstel" property="addresstel" jdbcType="CHAR" />
+    <result column="addressphone" property="addressphone" jdbcType="CHAR" />
+    <result column="custid" property="custid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    addressid, addressrecName, addressareas, addressareashi, addressareaqu, addresscity, addressemail, addresstel, addressphone,
+    custid
+  </sql>
+  <select id="alladdress" resultMap="addressMap" parameterType="customer" >
+    select 
+    <include refid="Base_Column_List" />
+    from address
+    where custid = #{custid}
+  </select>
+  <insert id="addaddress" parameterType="address">
+    insert into address(addressrecname, addressareas, addressareashi, addressareaqu, addresscity, addressemail, addresstel, addressphone, custid)
+    values (#{addressrecname},#{addressareas},#{addressareashi},#{addressareaqu},#{addresscity},#{addressemail},#{addresstel},#{addressphone},#{custid})
+  </insert>
+  <update id="updateaddress" parameterType="address">
+    update address
+    <set>
+      <if test="addressrecname!=null and addressrecname!=''">
+        addressrecname=#{addressrecname},
+      </if>
+      <if test="addressareas!=null and addressareas!=''">
+        addressareas=#{addressareas},
+      </if>
+      <if test="addressareashi!=null and addressareashi!=''">
+        addressareashi=#{addressareashi},
+      </if>
+      <if test="addressareaqu!=null and addressareaqu!=''">
+        addressareaqu=#{addressareaqu},
+      </if>
+      <if test="addresscity!=null and addresscity!=''">
+        addresscity=#{addresscity},
+      </if>
+      <if test="addressemail!=null and addressemail!=''">
+        addressemail=#{addressemail},
+      </if>
+      <if test="addressphone!=null and addressphone!=''">
+        addressphone=#{addressphone},
+      </if>
+      <if test="addressphone!=null and addressphone!=''">
+        addressphone=#{addressphone},
+      </if>
+    </set>
+    where addressid=#{addressid}
+  </update>
+  <delete id="deleteaddress" parameterType="address">
+    delete from address where addressid=#{addressid}
+  </delete>
+  <select id="oneaddress" resultMap="addressMap" >
+    select
+    <include refid="Base_Column_List" />
+    from address
+    where addressid = #{addressid}
+  </select>
+</mapper>

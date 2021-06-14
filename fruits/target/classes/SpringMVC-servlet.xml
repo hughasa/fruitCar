@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <!--对me.demo下所有类文件进行扫描-->
+    <context:component-scan base-package="com.hgkj.*"/>
+    <!-- 打开spring的annotation的支持 -->
+    <mvc:annotation-driven />
+    <!-- 注入视图解析器 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!--<property name="prefix" value="/WEB-INF/jsp/"></property>-->
+        <property name="suffix" value=".jsp"></property>
+        <!--<property name="viewClass" value = "org.springframework.web.servlet.view.JstlView"></property>-->
+    </bean>
+
+
+    <!--c3p0连接池配置-->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/fruits?characterEncoding=utf8"/>
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="user" value="root"/>
+        <property name="password" value="262520"/>
+    </bean>
+    <!-- 配置 SessionFactory -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mybatis-config.xml" />
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <!--事务管理器-->
+    <!-- DAO接口所在包名，Spring会自动查找其下的类 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.hgkj.model.dao" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+
+    <!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+    <!-- 基于注解的事务，当注解中发现@Transactional时，使用id为“transactionManager”的事务管理器 -->
+    <!-- 如果没有设置transaction-manager的值，则spring以缺省默认的事务管理器来处理事务，
+    默认事务管理器为第一个加载的事务管理器 -->
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!-- 静态资源 -->
+    <!--<mvc:resources location="/js/" mapping="/js/**" />-->
+    <!-- 配置文件上传解析器 MultipartResolver -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 设置请求编码格式-->
+        <property name="defaultEncoding" value="UTF-8" />
+        <property name="maxUploadSize" value="20971520"/>
+    </bean>
+    <!-- 配置拦截器 -->
+    <mvc:interceptors>
+        <!--使用bean直接定义在<mvc:interceptors>下面的拦截器将拦截所有请求-->
+        <!--  <bean class="com.itheima.interceptor.CustomInterceptor"/> -->
+        <!-- 拦截器1 -->
+        <mvc:interceptor>
+            <!-- 配置拦截器作用的路径 -->
+            <mvc:mapping path="/**/*.form*" />
+            <mvc:exclude-mapping path="/**/*admin*"/>
+            <mvc:exclude-mapping path="/Login.form"/>
+            <mvc:exclude-mapping path="/regis.form"/>
+            <mvc:exclude-mapping path="/allcuxiaogoods.form"/>
+            <mvc:exclude-mapping path="/onegoods.form*"/>
+            <mvc:exclude-mapping path="/allflgoods.form*"/>
+            <mvc:exclude-mapping path="/allfllikegoods.form*"/>
+            <mvc:exclude-mapping path="/alltggoods.form*"/>
+            <mvc:exclude-mapping path="/alltglikegoods.form*"/>
+            <mvc:exclude-mapping path="/allfygoods.form*"/>
+            <mvc:exclude-mapping path="/alllikegoods.form*"/>
+            <mvc:exclude-mapping path="/allfyshuiguogoods.form*"/>
+            <mvc:exclude-mapping path="/allfyshuiguolikegoods.form*"/>
+            <mvc:exclude-mapping path="/getVerifyCode.form"/>
+            <mvc:exclude-mapping path="/cfcustnameortel.form"/>
+            <mvc:exclude-mapping path="/loginzunzai.form"/>
+            <mvc:exclude-mapping path="/yzm.form"/>
+            <mvc:exclude-mapping path="/allajaxtggoods.form"/>
+
+            <!-- 定义在<mvc:interceptor>下面的表示匹配指定路径的请求才进行拦截的 -->
+            <bean class="com.hgkj.model.util.Logininter" />
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <!-- 配置拦截器作用的路径 -->
+            <mvc:mapping path="/**/*admin*"/>
+            <mvc:exclude-mapping path="/**/loginadmin.form"/>
+
+            <!-- 定义在<mvc:interceptor>下面的表示匹配指定路径的请求才进行拦截的 -->
+            <bean class="com.hgkj.model.util.AdminLogininter" />
+        </mvc:interceptor>
+    </mvc:interceptors>
+</beans>

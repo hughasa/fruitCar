@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hgkj.model.dao.CustomerMapper">
+    <resultMap id="customerMap" type="com.hgkj.model.entity.Customer">
+        <id column="custid" property="custid" jdbcType="INTEGER"/>
+        <result column="custname" property="custname" jdbcType="VARCHAR"/>
+        <result column="custpwd" property="custpwd" jdbcType="VARCHAR"/>
+        <result column="custtel" property="custtel" jdbcType="CHAR"/>
+        <result column="ye" property="ye" jdbcType="DOUBLE"/>
+        <association property="customerinfo" column="custid" javaType="customerinfo" fetchType="eager" select="onecustomerinfo"/>
+        <association property="custpoint" column="custid" javaType="custpoint" fetchType="eager" select="onecustpoint"/>
+        <collection property="ordersList" column="custid" select="allorders" fetchType="eager" ofType="orders"/>
+        <collection property="carList" column="custid" select="allcar" fetchType="eager" ofType="car"/>
+        <collection property="addressList" column="custid" select="alladdress" fetchType="eager" ofType="address"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    custid, custname, custpwd, custtel,ye
+  </sql>
+    <insert id="addcustomer" parameterType="customer">
+        insert into customer(custname,custpwd,custtel,ye) values (#{custname},#{custpwd},#{custtel},#{ye})
+        <selectKey order="AFTER" resultType="java.lang.Integer" keyProperty="custid">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    <select id="Logincustomer" resultMap="customerMap" parameterType="customer">
+        select
+        <include refid="Base_Column_List"/>
+        from customer
+        <where>
+            <if test="custname!=null and custname!=''">
+                and custname=#{custname}
+            </if>
+            <if test="custpwd!=null and custpwd!=''">
+                and custpwd=#{custpwd}
+            </if>
+            <if test="custtel!=null and custtel!=''">
+                and custtel=#{custtel}
+            </if>
+        </where>
+    </select>
+    <update id="updatecustomer" parameterType="customer">
+        update customer
+        <set>
+            <if test="custname!=null and custname!=''">
+                custname=#{custname},
+            </if>
+            <if test="custpwd!=null and custpwd!=''">
+                custpwd=#{custpwd},
+            </if>
+            <if test="custtel!=null and custtel!=''">
+                custtel=#{custtel},
+            </if>
+            <if test="ye!=null and ye!=''">
+                ye=#{ye},
+            </if>
+        </set>
+        where custid=#{custid}
+    </update>
+    <select id="onecustomerinfo" parameterType="java.lang.Integer" resultType="customerinfo">
+        select * from customerinfo where custid=#{custid}
+    </select>
+    <select id="onecustpoint" parameterType="java.lang.Integer" resultType="custpoint">
+        select * from custpoint where custid=#{custid}
+    </select>
+    <select id="allorders" parameterType="java.lang.Integer" resultMap="com.hgkj.model.dao.OrdersMapper.ordersMap">
+        select
+        *
+        from orders
+        where custid = #{custid}
+    </select>
+    <select id="allcar" parameterType="java.lang.Integer" resultMap="com.hgkj.model.dao.CarMapper.CarMap">
+        select
+        *
+        from car
+        where custid = #{custid}
+    </select>
+    <select id="alladdress" parameterType="java.lang.Integer" resultType="address">
+        select
+        *
+        from address
+        where custid = #{custid}
+    </select>
+</mapper>

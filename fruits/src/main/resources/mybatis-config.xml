@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>     
+    	<!-- 允许JDBC支持生成的键 -->
+        <setting name="useGeneratedKeys" value="true"/>
+		<setting name="logImpl" value="LOG4J"/>
+	</settings>
+	<typeAliases>
+		<!-- 配置数据类型的别名 -->
+		<typeAlias type="com.hgkj.model.entity.Customer" alias="customer"/>
+		<typeAlias type="com.hgkj.model.entity.Goods" alias="goods"/>
+		<typeAlias type="com.hgkj.model.entity.Car" alias="car"/>
+		<typeAlias type="com.hgkj.model.entity.Collectionn" alias="collectionn"/>
+		<typeAlias type="com.hgkj.model.entity.Customerinfo" alias="customerinfo"/>
+		<typeAlias type="com.hgkj.model.entity.Address" alias="address"/>
+		<typeAlias type="com.hgkj.model.entity.Custpoint" alias="custpoint"/>
+		<typeAlias type="com.hgkj.model.entity.Orders" alias="orders"/>
+		<typeAlias type="com.hgkj.model.entity.Orderdetail" alias="orderdetail"/>
+		<typeAlias type="com.hgkj.model.entity.Admin" alias="admin"/>
+		<typeAlias type="com.hgkj.model.entity.Orderstatetype" alias="orderstatetype"/>
+		<typeAlias type="com.hgkj.model.entity.Comment" alias="comment"/>
+	</typeAliases>
+	<mappers>
+		<!-- 配置映射文件 -->
+		<mapper resource="Dataxml/CustomerMapper.xml"/>
+		<mapper resource="Dataxml/GoodsMapper.xml"/>
+		<mapper resource="Dataxml/CarMapper.xml"/>
+		<mapper resource="Dataxml/CollectionnMapper.xml"/>
+		<mapper resource="Dataxml/CustomerinfoMapper.xml"/>
+		<mapper resource="Dataxml/AddressMapper.xml"/>
+		<mapper resource="Dataxml/CustpointMapper.xml"/>
+		<mapper resource="Dataxml/OrdersMapper.xml"/>
+		<mapper resource="Dataxml/OrderdetailMapper.xml"/>
+		<mapper resource="Dataxml/OrderstatetypeMapper.xml"/>
+		<mapper resource="Dataxml/AdminMapper.xml"/>
+		<mapper resource="Dataxml/CommentMapper.xml"/>
+	</mappers>
+</configuration>

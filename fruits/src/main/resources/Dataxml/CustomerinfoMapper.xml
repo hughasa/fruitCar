@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hgkj.model.dao.CustomerinfoMapper">
+    <resultMap id="customerinfoMap" type="com.hgkj.model.entity.Customerinfo">
+        <id column="custinfoid" property="custinfoid" jdbcType="INTEGER"/>
+        <result column="custpic" property="custpic" jdbcType="VARCHAR"/>
+        <result column="custtname" property="custtname" jdbcType="VARCHAR"/>
+        <result column="custsex" property="custsex" jdbcType="CHAR"/>
+        <result column="custemail" property="custemail" jdbcType="VARCHAR"/>
+        <result column="custid" property="custid" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    custInfoid, custpic, custtname, custsex, custemail, custid
+  </sql>
+    <insert id="addcustomerinfo" parameterType="customer">
+    insert into customerinfo(custpic, custtname, custsex, custemail, custid)
+    values (#{custpic}, #{custtname}, #{custsex}, #{custemail}, #{custid})
+  </insert>
+    <update id="updatecustomerinfo" parameterType="customer">
+    update customerinfo
+    <set>
+        <if test="custpic!=null and custpic!=''">
+            custpic=#{custpic},
+        </if>
+        <if test="custtname!=null and custtname!=''">
+            custtname=#{custtname},
+        </if>
+        <if test="custsex!=null and custsex!=''">
+            custsex=#{custsex},
+        </if>
+        <if test="custemail!=null and custemail!=''">
+            custemail=#{custemail},
+        </if>
+    </set>
+    where custinfoid=#{custinfoid}
+  </update>
+</mapper>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hgkj.model.dao.GoodsMapper">
+    <resultMap id="goodsMap" type="com.hgkj.model.entity.Goods">
+        <id column="goodsid" property="goodsid" jdbcType="INTEGER"/>
+        <result column="goodscreateTime" property="goodscreatetime" jdbcType="TIMESTAMP"/>
+        <result column="goodsname" property="goodsname" jdbcType="VARCHAR"/>
+        <result column="goodsprice" property="goodsprice" jdbcType="DOUBLE"/>
+        <result column="goodsinfo" property="goodsinfo" jdbcType="VARCHAR"/>
+        <result column="goodspic" property="goodspic" jdbcType="VARCHAR"/>
+        <result column="teamBuy" property="teambuy" jdbcType="INTEGER"/>
+        <result column="teamBuyprice" property="teambuyprice" jdbcType="DOUBLE"/>
+        <result column="beginTime" property="begintime" jdbcType="TIMESTAMP"/>
+        <result column="endTime" property="endtime" jdbcType="TIMESTAMP"/>
+        <result column="pointBuy" property="pointbuy" jdbcType="INTEGER"/>
+        <result column="pointBuyprice" property="pointbuyprice" jdbcType="INTEGER"/>
+        <result column="goodssales" property="goodssales" jdbcType="INTEGER"/>
+        <result column="goodsinventory" property="goodsinventory" jdbcType="INTEGER"/>
+        <result column="goodsTypeid" property="goodstypeid" jdbcType="INTEGER"/>
+        <result column="place" property="place" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    goodsid, goodscreateTime, goodsname, goodsprice, goodsinfo, goodspic, teamBuy, teamBuyprice, 
+    beginTime, endTime, pointBuy, pointBuyprice, goodssales, goodsinventory, goodsTypeid, place
+  </sql>
+    <select id="allcuxiaogoods" resultMap="goodsMap">
+        select
+        <include refid="Base_Column_List"/>
+        from goods
+        <where>
+            <if test="goodsname!=null and goodsname!=''">
+                and goodsname like concat('%', #{goodsname},'%')
+            </if>
+            <if test="pointbuy!=null and pointbuy!=''">
+                and pointbuy=#{pointbuy}
+            </if>
+            <if test="endtime!=null">
+                and endtime>#{endtime}
+            </if>
+            <if test="endtime!=null">
+               and begintime &lt; #{endtime}
+            </if>
+            <if test="teambuy!=null">
+               and teambuy=#{teambuy}
+            </if>
+            <if test="endtime!=null">
+                and endtime is not null order by begintime desc
+            </if>
+            <if test="goodstypeid!=null and goodstypeid!=''">
+                and goodstypeid=#{goodstypeid} order by goodscreateTime desc
+            </if>
+        </where>
+    </select>
+    <select id="allfygoods" resultMap="goodsMap">
+        select
+        <include refid="Base_Column_List"/>
+        from goods
+        where goodstypeid=#{param1.goodstypeid} LIMIT #{param2},#{param3}
+    </select>
+    <select id="allxlgoods" resultMap="goodsMap">
+        select
+        <include refid="Base_Column_List"/>
+        from goods
+        where goodstypeid=#{goodstypeid} order by goodssales desc LIMIT 5
+    </select>
+    <select id="alllikegoods" resultMap="goodsMap">
+        select
+        <include refid="Base_Column_List"/>
+        from goods
+        where goodsname like concat('%', #{param1.goodsname},'%') and goodstypeid=#{param1.goodstypeid} LIMIT #{param2},#{param3}
+    </select>
+    <select id="alltggoods" resultMap="goodsMap">
+        select
+        <include refid="Base_Column_List"/>
+        from goods
+        where endtime>#{param1.endtime} and begintime &lt; #{param1.endtime} and teambuy=#{param1.teambuy} and  endtime is not null order by begintime desc LIMIT #{param2},#{param3}
+    </select>
+    <select id="onegoods" resultMap="goodsMap">
+        select
+        <include refid="Base_Column_List"/>
+        from goods
+        where goodsid=#{goodsid}
+    </select>
+    <select id="alljfgoods" resultMap="goodsMap">
+        select
+        <include refid="Base_Column_List"/>
+        from goods
+        where pointbuy=#{param1.pointbuy} LIMIT #{param2},#{param3}
+    </select>
+    <select id="alltglikegoods" resultMap="goodsMap">
+        select
+        <include refid="Base_Column_List"/>
+        from goods
+        where goodsname like concat('%', #{param1.goodsname},'%') and endtime>#{param1.endtime} and begintime &lt; #{param1.endtime} and teambuy=#{param1.teambuy} and endtime is not null order by begintime desc LIMIT #{param2},#{param3}
+    </select>
+    <select id="alljflikegoods" resultMap="goodsMap">
+        select
+        <include refid="Base_Column_List"/>
+        from goods
+        where goodsname like concat('%', #{param1.goodsname},'%') and pointbuy=#{param1.pointbuy} LIMIT #{param2},#{param3}
+    </select>
+    <insert id="addgoods" parameterType="goods">
+        insert into goods(goodscreatetime, goodsname, goodsprice, goodsinfo, goodspic, goodstypeid, place, pointbuy, pointbuyprice)
+        values (#{goodscreatetime},#{goodsname},#{goodsprice},#{goodsinfo},#{goodspic},#{goodstypeid},#{place},#{pointbuy},#{pointbuyprice})
+    </insert>
+    <update id="updategoods" parameterType="goods">
+      update goods
+      <set>
+          <if test="goodsname!=null and goodsname!=''">
+              goodsname=#{goodsname},
+          </if>
+          <if test="goodsprice!=null and goodsprice!=''">
+              goodsprice=#{goodsprice},
+          </if>
+          <if test="goodsinfo!=null and goodsinfo!=''">
+              goodsinfo=#{goodsinfo},
+          </if>
+          <if test="goodspic!=null and goodspic!=''">
+              goodspic=#{goodspic},
+          </if>
+          <if test="teambuy!=null">
+              teambuy=#{teambuy},
+          </if>
+          <if test="teambuyprice!=null">
+              teambuyprice=#{teambuyprice},
+          </if>
+          <if test="begintime!=null">
+              begintime=#{begintime},
+          </if>
+          <if test="endtime!=null">
+              endtime=#{endtime},
+          </if>
+          <if test="pointbuy!=null">
+              pointbuy=#{pointbuy},
+          </if>
+          <if test="pointbuyprice!=null">
+              pointbuyprice=#{pointbuyprice},
+          </if>
+          <if test="goodssales!=null and goodssales!=''">
+              goodssales=#{goodssales},
+          </if>
+          <if test="goodsinventory!=null and goodsinventory!=''">
+              goodsinventory=#{goodsinventory},
+          </if>
+          <if test="goodstypeid!=null and goodstypeid!=''">
+              goodstypeid=#{goodstypeid},
+          </if>
+          <if test="place!=null and place!=''">
+              place=#{place},
+          </if>
+      </set>
+        where goodsid=#{goodsid}
+    </update>
+    <select id="alladminlikegoods" resultMap="goodsMap">
+        select
+        <include refid="Base_Column_List"/>
+        from goods
+        where
+        <if test="goods.goodsname!=null and goods.goodsname!=''">
+            goodsname like concat('%', #{goods.goodsname},'%') and
+        </if>
+        goodstypeid=#{goods.goodstypeid} LIMIT #{pageIndex},#{pagesize}
+    </select>
+    <delete id="deletegoods" parameterType="goods">
+        delete from goods where goodsid=#{goodsid}
+    </delete>
+</mapper>

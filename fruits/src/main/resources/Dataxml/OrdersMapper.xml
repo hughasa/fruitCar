@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hgkj.model.dao.OrdersMapper" >
+  <resultMap id="ordersMap" type="com.hgkj.model.entity.Orders" >
+    <id column="ordersid" property="ordersid" jdbcType="INTEGER" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="orderstotalPage" property="orderstotalpage" jdbcType="DOUBLE" />
+    <result column="orderscreateTime" property="orderscreatetime" jdbcType="TIMESTAMP" />
+    <result column="invoice" property="invoice" jdbcType="INTEGER" />
+    <result column="ordersmessage" property="ordersmessage" jdbcType="CHAR" />
+    <result column="pointget" property="pointget" jdbcType="INTEGER" />
+    <result column="custid" property="custid" jdbcType="INTEGER" />
+    <result column="payTypeid" property="paytypeid" jdbcType="INTEGER" />
+    <result column="orderStateTypeid" property="orderstatetypeid" jdbcType="INTEGER" />
+    <result column="expressid" property="expressid" jdbcType="INTEGER" />
+    <association property="orderstatetype" column="orderStateTypeid" javaType="orderstatetype" fetchType="eager" select="oneorderstatetype"/>
+    <collection property="orderdetailList" column="ordersid" ofType="orderdetail" fetchType="eager" select="allorderdetail"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ordersid, address, orderstotalPage, orderscreateTime, invoice, ordersmessage, pointget, 
+    custid, payTypeid, orderStateTypeid, expressid
+  </sql>
+  <select id="allorders" resultMap="ordersMap">
+    select
+    <include refid="Base_Column_List" />
+    from orders
+    <if test="param1!=0">
+      limit #{param1},#{param2}
+    </if>
+  </select>
+  <select id="allorderdetail" parameterType="java.lang.Integer" resultMap="com.hgkj.model.dao.OrderdetailMapper.orderdetailMap">
+    select
+    *
+    from orderdetail
+    where ordersid = #{ordersid}
+  </select>
+  <select id="oneorderstatetype" resultType="orderstatetype" parameterType="java.lang.Integer">
+      select
+    *
+    from orderstatetype
+    where orderstatetypeid = #{orderstatetypeid}
+  </select>
+  <insert id="addorder" parameterType="orders">
+    insert into orders(address, orderstotalPage, orderscreateTime, invoice, ordersmessage, pointget, custid, payTypeid, orderStateTypeid, expressid)
+    values (#{address},#{orderstotalpage},#{orderscreatetime},#{invoice},#{ordersmessage},#{pointget},#{custid},#{paytypeid},#{orderstatetypeid},#{expressid})
+    <selectKey order="AFTER" resultType="java.lang.Integer" keyProperty="ordersid">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+  </insert>
+  <update id="updateorders" parameterType="orders">
+    update orders
+    <set>
+      <if test="orderstatetypeid!=null">
+        orderstatetypeid=#{orderstatetypeid},
+      </if>
+    </set>
+    where ordersid=#{ordersid}
+  </update>
+  <delete id="deleteorders" parameterType="orders">
+    delete from orders where ordersid=#{ordersid}
+  </delete>
+  <select id="oneorders" resultMap="ordersMap">
+    select
+    <include refid="Base_Column_List" />
+    from orders
+    where ordersid=#{ordersid}
+  </select>
+</mapper>
